@@ -3,92 +3,110 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>QCM Python — Accueil</title>
+  <title>QCM Python — Index</title>
 
   <style>
     :root { color-scheme: light dark; }
+
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       margin: 0;
-      padding: 24px;
+      padding: 28px;
       line-height: 1.4;
     }
+
     .wrap {
       max-width: 900px;
       margin: 0 auto;
     }
+
     h1 {
       font-size: 26px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-    p.sub {
-      opacity: 0.8;
-      margin-bottom: 24px;
+
+    .sub {
+      opacity: 0.75;
+      margin-bottom: 26px;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+
+    .theme {
+      margin-bottom: 28px;
     }
-    li {
-      border: 1px solid rgba(127,127,127,.35);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
+
+    .theme-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    a {
+
+    .quiz-list {
+      border-left: 3px solid rgba(127,127,127,.35);
+      padding-left: 14px;
+    }
+
+    .quiz {
+      margin-bottom: 12px;
+    }
+
+    a.quiz-link {
       text-decoration: none;
       color: inherit;
       display: block;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(127,127,127,.25);
     }
-    a:hover {
+
+    a.quiz-link:hover {
       background: rgba(127,127,127,.08);
-      border-radius: 14px;
     }
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
+
+    .quiz-name {
+      font-weight: 500;
+      font-size: 16px;
     }
-    .meta {
-      font-size: 14px;
-      opacity: 0.75;
+
+    .quiz-path {
+      font-size: 13px;
+      opacity: 0.6;
+      margin-top: 3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
   </style>
 </head>
 
 <body>
 <div class="wrap">
+
   <h1>QCM Python</h1>
-  <p class="sub">
-    Sélectionne un quiz.  
-    Les questions sont interactives et doivent être validées une par une.
-  </p>
+  <div class="sub">
+    Index des quiz disponibles — organisation par thèmes
+  </div>
 
-  <ul>
-    <li>
-      <a href="engine.html">
-        <div class="title">Boucles en Python — niveau lycée / CPGE</div>
-        <div class="meta">
-          10 questions · for / while · pièges classiques
-        </div>
-      </a>
-    </li>
+  <!-- ===================== -->
+  <!-- Thème : Boucles       -->
+  <!-- ===================== -->
 
-    <!--
-    EXEMPLE POUR AJOUTER UN NOUVEAU QUIZ PLUS TARD :
+  <div class="theme">
+    <div class="theme-title">📁 Boucles</div>
 
-    <li>
-      <a href="engine.html?quiz=boucles-avance">
-        <div class="title">Boucles avancées — niveau concours</div>
-        <div class="meta">
-          12 questions · break / continue / for…else
-        </div>
-      </a>
-    </li>
-    -->
+    <div class="quiz-list">
 
-  </ul>
+      <div class="quiz">
+        <a class="quiz-link"
+           href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-1.js">
+          <div class="quiz-name">Boucles — Quiz 1</div>
+          <div class="quiz-path">Quiz-JS/Boucles/q-boucles-1.js</div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
