@@ -113,21 +113,7 @@
     .msg.no { background: rgba(231, 76, 60, .15); }
 
     .explain { margin-top: 8px; opacity:.92; }
-
-    .hint {
-      font-size: 13px;
-      opacity: .8;
-      margin-top: 10px;
-    }
-
-    .footer {
-      margin-top: 14px;
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      opacity:.9;
-    }
+    .hint { font-size: 13px; opacity: .8; margin-top: 10px; }
   </style>
 </head>
 
@@ -155,109 +141,144 @@
 
     <div id="message" class="msg" style="display:none;"></div>
 
-    <div class="footer">
-      <div class="hint">Astuce : coche puis clique sur <strong>Valider</strong></div>
-      <div class="hint">Ne pas exécuter le code 😉</div>
-    </div>
+    <div class="hint" id="hint"></div>
   </div>
 </div>
 
-<!-- ===============================
-     CHARGEMENT DU QUIZ (À MODIFIER)
-     =============================== -->
-
-<script src="quiz.js"></script>
-
 <script>
 /* ==========================================
-   MOTEUR QCM — NE PLUS MODIFIER CI-DESSOUS
+   CHARGEMENT DYNAMIQUE DU QUIZ
+   ========================================== */
+
+function getQuizPath() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("quiz");
+}
+
+function loadQuiz(path) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = path;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Impossible de charger " + path));
+    document.head.appendChild(script);
+  });
+}
+
+const quizPath = getQuizPath();
+const hint = document.getElementById("hint");
+
+if (!quizPath) {
+  document.getElementById("qarea").innerHTML =
+    "<p><strong>Erreur :</strong> aucun quiz spécifié.<br>" +
+    "Utilise par exemple : <code>engine.html?quiz=Quiz/Boucles/boucles-01.js</code></p>";
+  hint.textContent = "";
+} else {
+  hint.textContent = "Quiz chargé : " + quizPath;
+  loadQuiz(quizPath)
+    .then(initEngine)
+    .catch(err => {
+      document.getElementById("qarea").innerHTML =
+        "<p><strong>Erreur :</strong> " + err.message + "</p>";
+      hint.textContent = "";
+    });
+}
+
+/* ==========================================
+   MOTEUR QCM — NE PLUS MODIFIER
    ========================================== */
 
 let idx = 0;
-let validated = Array(QUIZ.length).fill(false);
+let validated = [];
 
-const qarea = document.getElementById("qarea");
-const progress = document.getElementById("progress");
-const score = document.getElementById("score");
-const msg = document.getElementById("message");
-const checkBtn = document.getElementById("checkBtn");
-const nextBtn = document.getElementById("nextBtn");
-const resetBtn = document.getElementById("resetBtn");
-
-function escHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
-  }[c]));
-}
-
-function render() {
-  const q = QUIZ[idx];
-
-  progress.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
-  score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
-
-  msg.style.display = "none";
-  nextBtn.disabled = true;
-
-  const choicesHtml = q.choices.map((txt, i) => `
-    <label class="choice">
-      <input type="checkbox" data-choice="${i}">
-      <div>${escHtml(txt)}</div>
-    </label>
-  `).join("");
-
-  qarea.innerHTML = `
-    <div class="qtitle"><strong>${escHtml(q.title)}</strong></div>
-    <pre><code>${escHtml(q.code)}</code></pre>
-    <div class="choices">${choicesHtml}</div>
-  `;
-}
-
-function getChecked() {
-  return [...qarea.querySelectorAll("input[type=checkbox]")]
-    .filter(c => c.checked)
-    .map(c => +c.dataset.choice)
-    .sort();
-}
-
-function equal(a, b) {
-  return a.length === b.length && a.every((v,i)=>v===b[i]);
-}
-
-checkBtn.onclick = () => {
-  const q = QUIZ[idx];
-  if (equal(getChecked(), [...q.correct].sort())) {
-    validated[idx] = true;
-    msg.className = "msg ok";
-    msg.innerHTML = `<strong>Correct ✔</strong><div class="explain">${escHtml(q.explanation)}</div>`;
-    msg.style.display = "block";
-    nextBtn.disabled = false;
-  } else {
-    msg.className = "msg no";
-    msg.innerHTML = `<strong>Pas encore ❌</strong><div class="explain">La sélection n’est pas exactement correcte.</div>`;
-    msg.style.display = "block";
+function initEngine() {
+  if (!window.QUIZ || !Array.isArray(QUIZ)) {
+    document.getElementById("qarea").innerHTML =
+      "<p><strong>Erreur :</strong> le fichier du quiz ne définit pas <code>QUIZ</code>.</p>";
+    return;
   }
-  score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
-};
 
-nextBtn.onclick = () => {
-  if (idx < QUIZ.length - 1) {
-    idx++;
-    render();
-  } else {
-    qarea.innerHTML = `<h2>🎉 Terminé</h2><p>Bravo !</p>`;
-    progress.textContent = "Fin";
-    nextBtn.disabled = true;
-  }
-};
-
-resetBtn.onclick = () => {
-  idx = 0;
   validated = Array(QUIZ.length).fill(false);
-  render();
-};
 
-render();
+  const qarea = document.getElementById("qarea");
+  const progress = document.getElementById("progress");
+  const score = document.getElementById("score");
+  const msg = document.getElementById("message");
+  const checkBtn = document.getElementById("checkBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  function render() {
+    const q = QUIZ[idx];
+    progress.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+    msg.style.display = "none";
+    nextBtn.disabled = true;
+
+    qarea.innerHTML = `
+      <div class="qtitle"><strong>${esc(q.title)}</strong></div>
+      <pre><code>${esc(q.code)}</code></pre>
+      <div class="choices">
+        ${q.choices.map((t,i)=>`
+          <label class="choice">
+            <input type="checkbox" data-i="${i}">
+            <div>${esc(t)}</div>
+          </label>`).join("")}
+      </div>`;
+  }
+
+  function checked() {
+    return [...document.querySelectorAll("input[type=checkbox]")]
+      .filter(c=>c.checked)
+      .map(c=>+c.dataset.i)
+      .sort();
+  }
+
+  function same(a,b) {
+    return a.length===b.length && a.every((v,i)=>v===b[i]);
+  }
+
+  checkBtn.onclick = () => {
+    const q = QUIZ[idx];
+    if (same(checked(), [...q.correct].sort())) {
+      validated[idx] = true;
+      msg.className = "msg ok";
+      msg.innerHTML = `<strong>Correct ✔</strong><div class="explain">${esc(q.explanation)}</div>`;
+      msg.style.display = "block";
+      nextBtn.disabled = false;
+    } else {
+      msg.className = "msg no";
+      msg.innerHTML = "<strong>Pas encore ❌</strong><div class='explain'>La sélection n’est pas exactement correcte.</div>";
+      msg.style.display = "block";
+    }
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+  };
+
+  nextBtn.onclick = () => {
+    if (idx < QUIZ.length - 1) {
+      idx++;
+      render();
+    } else {
+      qarea.innerHTML = "<h2>🎉 Terminé</h2><p>Bravo !</p>";
+      progress.textContent = "Fin";
+      nextBtn.disabled = true;
+    }
+  };
+
+  resetBtn.onclick = () => {
+    idx = 0;
+    validated = Array(QUIZ.length).fill(false);
+    render();
+  };
+
+  render();
+}
 </script>
 
 </body>
