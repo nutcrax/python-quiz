@@ -1,25 +1,25 @@
 window.QUIZ = [
 
   {
-    title: "QCM 1 — Condition testée trop tôt",
+    title: "QCM 1 — Condition testée avant l’itération",
     code: `i = 0
 while i < 5:
     print(i)
     i += 1`,
     choices: [
-      "A. Le programme affiche 0 1 2 3 4",
-      "B. Le programme affiche 1 2 3 4 5",
-      "C. Le programme affiche 0 1 2 3",
-      "D. Le programme affiche 1 2 3 4"
+      "A. 0 1 2 3 4",
+      "B. 1 2 3 4 5",
+      "C. 0 1 2 3",
+      "D. 1 2 3 4"
     ],
     correct: [0],
     explanation:
       "La condition est testée avant chaque itération. "
-      + "Les valeurs affichées sont celles de i avant l’incrément : 0,1,2,3,4."
+      + "On affiche la valeur courante de i avant l’incrément : 0, 1, 2, 3, 4."
   },
 
   {
-    title: "QCM 2 — Incrément après affichage",
+    title: "QCM 2 — Pas d’incrément constant",
     code: `i = 0
 while i < 3:
     print(i)
@@ -32,8 +32,8 @@ while i < 3:
     ],
     correct: [1],
     explanation:
-      "Les valeurs successives de i sont 0 puis 2. "
-      + "À i = 4, la condition échoue. Seules 0 et 2 sont affichées."
+      "i prend successivement les valeurs 0 puis 2. "
+      + "À i = 4, la condition i < 3 devient fausse."
   },
 
   {
@@ -79,12 +79,16 @@ print(s)`,
       + "s est donc incrémenté 4 fois."
   },
 
+  /* =========================
+     QUESTION 5 — CORRIGÉE
+     ========================= */
+
   {
-    title: "QCM 5 — Réaffectation de l’indice",
+    title: "QCM 5 — Réaffectation locale de l’indice",
     code: `s = 0
 for i in range(4):
-    i = i + 1
-    s += i
+    j = i + 1
+    s += j
 print(s)`,
     choices: [
       "A. 6",
@@ -92,15 +96,16 @@ print(s)`,
       "C. 10",
       "D. 12"
     ],
-    correct: [1],
+    correct: [2],
     explanation:
-      "La boucle impose i = 0,1,2,3. "
-      + "On ajoute donc 1,2,3,4 à s. La somme vaut 10 ? Non : on ajoute i+1, soit 1+2+3+4 = 10. "
-      + "Mais s démarre à 0, donc la bonne valeur est 10. ⚠️ Correction : réponse C."
+      "La boucle impose i = 0, 1, 2, 3. "
+      + "On ajoute à s les valeurs 1, 2, 3 et 4. "
+      + "La somme finale vaut donc 10. "
+      + "Aucune ambiguïté liée à la réaffectation de l’indice de boucle."
   },
 
   {
-    title: "QCM 6 — Variable de boucle après un break",
+    title: "QCM 6 — Valeur de la variable après break",
     code: `for i in range(10):
     if i == 3:
         break
@@ -118,7 +123,7 @@ print(i)`,
   },
 
   {
-    title: "QCM 7 — Boucle imbriquée contrôlée",
+    title: "QCM 7 — Boucle imbriquée avec arrêt",
     code: `c = 0
 for i in range(3):
     for j in range(3):
@@ -135,8 +140,8 @@ print(c)`,
     correct: [3],
     explanation:
       "Pour i = 0 : j = 0 → +1. "
-      + "Pour i = 1 : j = 0,1 → +2. "
-      + "Pour i = 2 : j = 0,1,2 → +3. "
+      + "Pour i = 1 : j = 0, 1 → +2. "
+      + "Pour i = 2 : j = 0, 1, 2 → +3. "
       + "Total = 6."
   },
 
@@ -156,9 +161,8 @@ print(c)`,
     ],
     correct: [0],
     explanation:
-      "Les valeurs de i sont 0 à 4. "
-      + "Les valeurs impaires sont 1 et 3. "
-      + "c est donc incrémenté 2 fois."
+      "Les valeurs impaires entre 0 et 4 sont 1 et 3. "
+      + "L’instruction c += 1 est exécutée deux fois."
   },
 
   {
@@ -177,26 +181,35 @@ print(i)`,
     ],
     correct: [1],
     explanation:
-      "Lorsque i vaut 2, il est réaffecté à 4. "
+      "Quand i vaut 2, il est réaffecté à 4. "
       + "La boucle continue ensuite normalement jusqu’à ce que i atteigne 5."
   },
 
+  /* =========================
+     QUESTION 10 — PLUS EXIGEANTE
+     ========================= */
+
   {
-    title: "QCM 10 — Boucle for et portée",
-    code: `x = 0
+    title: "QCM 10 — Interaction for / while",
+    code: `c = 0
 for i in range(3):
-    x = i
-print(x)`,
+    j = 0
+    while j < i:
+        c += 1
+        j += 1
+print(c)`,
     choices: [
-      "A. 0",
-      "B. 1",
-      "C. 2",
-      "D. 3"
+      "A. 1",
+      "B. 2",
+      "C. 3",
+      "D. 6"
     ],
     correct: [2],
     explanation:
-      "La variable x reçoit successivement les valeurs 0, 1 puis 2. "
-      + "Après la boucle, elle vaut donc 2."
+      "Pour i = 0 : la boucle while ne s’exécute pas. "
+      + "Pour i = 1 : j = 0 → 1 itération. "
+      + "Pour i = 2 : j = 0, 1 → 2 itérations. "
+      + "Total : 1 + 2 = 3."
   }
 
 ];
