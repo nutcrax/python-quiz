@@ -171,7 +171,7 @@ const hint = document.getElementById("hint");
 if (!quizPath) {
   document.getElementById("qarea").innerHTML =
     "<p><strong>Erreur :</strong> aucun quiz spécifié.<br>" +
-    "Utilise par exemple : <code>engine.html?quiz=Quiz/Boucles/boucles-01.js</code></p>";
+    "Utilise par exemple : <code>engine.html?quiz=Quiz-JS/Boucles/q-boucles-1.js</code></p>";
   hint.textContent = "";
 } else {
   hint.textContent = "Quiz chargé : " + quizPath;
@@ -185,20 +185,23 @@ if (!quizPath) {
 }
 
 /* ==========================================
-   MOTEUR QCM — NE PLUS MODIFIER
+   MOTEUR QCM — VERSION ROBUSTE
    ========================================== */
 
 let idx = 0;
 let validated = [];
+let quiz = null;
 
 function initEngine() {
-  if (!window.QUIZ || !Array.isArray(QUIZ)) {
+  quiz = window.QUIZ;
+
+  if (!Array.isArray(quiz)) {
     document.getElementById("qarea").innerHTML =
       "<p><strong>Erreur :</strong> le fichier du quiz ne définit pas <code>QUIZ</code>.</p>";
     return;
   }
 
-  validated = Array(QUIZ.length).fill(false);
+  validated = Array(quiz.length).fill(false);
 
   const qarea = document.getElementById("qarea");
   const progress = document.getElementById("progress");
@@ -215,9 +218,9 @@ function initEngine() {
   }
 
   function render() {
-    const q = QUIZ[idx];
-    progress.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
-    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+    const q = quiz[idx];
+    progress.textContent = `Question ${idx + 1} / ${quiz.length}`;
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${quiz.length}`;
     msg.style.display = "none";
     nextBtn.disabled = true;
 
@@ -245,7 +248,7 @@ function initEngine() {
   }
 
   checkBtn.onclick = () => {
-    const q = QUIZ[idx];
+    const q = quiz[idx];
     if (same(checked(), [...q.correct].sort())) {
       validated[idx] = true;
       msg.className = "msg ok";
@@ -257,11 +260,11 @@ function initEngine() {
       msg.innerHTML = "<strong>Pas encore ❌</strong><div class='explain'>La sélection n’est pas exactement correcte.</div>";
       msg.style.display = "block";
     }
-    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${quiz.length}`;
   };
 
   nextBtn.onclick = () => {
-    if (idx < QUIZ.length - 1) {
+    if (idx < quiz.length - 1) {
       idx++;
       render();
     } else {
@@ -273,7 +276,7 @@ function initEngine() {
 
   resetBtn.onclick = () => {
     idx = 0;
-    validated = Array(QUIZ.length).fill(false);
+    validated = Array(quiz.length).fill(false);
     render();
   };
 
