@@ -1,4 +1,4 @@
-const QUIZ = [
+window.QUIZ = [
 
   {
     title: "QCM 1 — Alias et dictionnaire",
