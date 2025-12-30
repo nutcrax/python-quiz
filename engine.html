@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QCM interactif</title>
+
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; padding: 24px; line-height: 1.35;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    .sub { opacity: .8; margin: 0 0 18px; }
+
+    .card {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .topbar {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      opacity: .9;
+    }
+
+    pre {
+      margin: 12px 0;
+      padding: 12px;
+      border-radius: 12px;
+      overflow:auto;
+      background: rgba(127,127,127,.12);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .qtitle { font-size: 18px; margin: 0 0 8px; }
+
+    .choices {
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+
+    label.choice {
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(127,127,127,.25);
+      cursor: pointer;
+      user-select:none;
+    }
+
+    label.choice:hover {
+      background: rgba(127,127,127,.08);
+    }
+
+    input[type="checkbox"] {
+      transform: translateY(2px);
+    }
+
+    .actions {
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    button.primary {
+      background: rgba(127,127,127,.14);
+    }
+
+    button:disabled {
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .msg {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(127,127,127,.35);
+    }
+
+    .msg.ok { background: rgba(46, 204, 113, .15); }
+    .msg.no { background: rgba(231, 76, 60, .15); }
+
+    .explain { margin-top: 8px; opacity:.92; }
+
+    .hint {
+      font-size: 13px;
+      opacity: .8;
+      margin-top: 10px;
+    }
+
+    .footer {
+      margin-top: 14px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      opacity:.9;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>QCM interactif</h1>
+  <p class="sub">
+    Les questions sont présentées une par une.
+    Tu ne peux passer à la suivante que si tu coches exactement toutes les bonnes réponses.
+  </p>
+
+  <div class="card">
+    <div class="topbar">
+      <div class="pill" id="progress"></div>
+      <div class="pill" id="score"></div>
+    </div>
+
+    <div id="qarea"></div>
+
+    <div class="actions">
+      <button class="primary" id="checkBtn">Valider</button>
+      <button id="nextBtn" disabled>Question suivante</button>
+      <button id="resetBtn">Recommencer</button>
+    </div>
+
+    <div id="message" class="msg" style="display:none;"></div>
+
+    <div class="footer">
+      <div class="hint">Astuce : coche puis clique sur <strong>Valider</strong></div>
+      <div class="hint">Ne pas exécuter le code 😉</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===============================
+     CHARGEMENT DU QUIZ (À MODIFIER)
+     =============================== -->
+
+<script src="quiz.js"></script>
+
+<script>
+/* ==========================================
+   MOTEUR QCM — NE PLUS MODIFIER CI-DESSOUS
+   ========================================== */
+
+let idx = 0;
+let validated = Array(QUIZ.length).fill(false);
+
+const qarea = document.getElementById("qarea");
+const progress = document.getElementById("progress");
+const score = document.getElementById("score");
+const msg = document.getElementById("message");
+const checkBtn = document.getElementById("checkBtn");
+const nextBtn = document.getElementById("nextBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+function escHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function render() {
+  const q = QUIZ[idx];
+
+  progress.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
+  score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+
+  msg.style.display = "none";
+  nextBtn.disabled = true;
+
+  const choicesHtml = q.choices.map((txt, i) => `
+    <label class="choice">
+      <input type="checkbox" data-choice="${i}">
+      <div>${escHtml(txt)}</div>
+    </label>
+  `).join("");
+
+  qarea.innerHTML = `
+    <div class="qtitle"><strong>${escHtml(q.title)}</strong></div>
+    <pre><code>${escHtml(q.code)}</code></pre>
+    <div class="choices">${choicesHtml}</div>
+  `;
+}
+
+function getChecked() {
+  return [...qarea.querySelectorAll("input[type=checkbox]")]
+    .filter(c => c.checked)
+    .map(c => +c.dataset.choice)
+    .sort();
+}
+
+function equal(a, b) {
+  return a.length === b.length && a.every((v,i)=>v===b[i]);
+}
+
+checkBtn.onclick = () => {
+  const q = QUIZ[idx];
+  if (equal(getChecked(), [...q.correct].sort())) {
+    validated[idx] = true;
+    msg.className = "msg ok";
+    msg.innerHTML = `<strong>Correct ✔</strong><div class="explain">${escHtml(q.explanation)}</div>`;
+    msg.style.display = "block";
+    nextBtn.disabled = false;
+  } else {
+    msg.className = "msg no";
+    msg.innerHTML = `<strong>Pas encore ❌</strong><div class="explain">La sélection n’est pas exactement correcte.</div>`;
+    msg.style.display = "block";
+  }
+  score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+};
+
+nextBtn.onclick = () => {
+  if (idx < QUIZ.length - 1) {
+    idx++;
+    render();
+  } else {
+    qarea.innerHTML = `<h2>🎉 Terminé</h2><p>Bravo !</p>`;
+    progress.textContent = "Fin";
+    nextBtn.disabled = true;
+  }
+};
+
+resetBtn.onclick = () => {
+  idx = 0;
+  validated = Array(QUIZ.length).fill(false);
+  render();
+};
+
+render();
+</script>
+
+</body>
+</html>
