@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QCM Python — Accueil</title>
+
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.4;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+    p.sub {
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    a:hover {
+      background: rgba(127,127,127,.08);
+      border-radius: 14px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>QCM Python</h1>
+  <p class="sub">
+    Sélectionne un quiz.  
+    Les questions sont interactives et doivent être validées une par une.
+  </p>
+
+  <ul>
+    <li>
+      <a href="engine.html">
+        <div class="title">Boucles en Python — niveau lycée / CPGE</div>
+        <div class="meta">
+          10 questions · for / while · pièges classiques
+        </div>
+      </a>
+    </li>
+
+    <!--
+    EXEMPLE POUR AJOUTER UN NOUVEAU QUIZ PLUS TARD :
+
+    <li>
+      <a href="engine.html?quiz=boucles-avance">
+        <div class="title">Boucles avancées — niveau concours</div>
+        <div class="meta">
+          12 questions · break / continue / for…else
+        </div>
+      </a>
+    </li>
+    -->
+
+  </ul>
+</div>
+</body>
+</html>
