@@ -1,6 +1,4 @@
-console.log("QUIZ JS CHARGÉ");
-
-window.QUIZ = [
+const QUIZ = [
 
   {
     title: "QCM 1 — Faux compteur",
@@ -202,5 +200,3 @@ print(x)`,
   }
 
 ];
-
-
