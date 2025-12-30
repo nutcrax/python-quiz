@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QCM Boucles Python — 10 questions</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; line-height: 1.35; }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    .sub { opacity: .8; margin: 0 0 18px; }
+    .card { border: 1px solid rgba(127,127,127,.35); border-radius: 16px; padding: 18px; }
+    .topbar { display:flex; gap:12px; align-items:center; justify-content: space-between; margin-bottom: 12px; }
+    .pill { border: 1px solid rgba(127,127,127,.35); border-radius: 999px; padding: 6px 10px; font-size: 13px; opacity: .9; }
+    pre { margin: 12px 0; padding: 12px; border-radius: 12px; overflow:auto; background: rgba(127,127,127,.12); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; }
+    .qtitle { font-size: 18px; margin: 0 0 8px; }
+    .choices { display:flex; flex-direction: column; gap: 10px; margin: 10px 0 14px; }
+    label.choice {
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid rgba(127,127,127,.25);
+      cursor: pointer;
+      user-select:none;
+    }
+    label.choice:hover { background: rgba(127,127,127,.08); }
+    input[type="checkbox"] { transform: translateY(2px); }
+    .actions { display:flex; gap:10px; flex-wrap: wrap; }
+    button {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 12px; padding: 10px 12px;
+      font-weight: 600; cursor: pointer; background: transparent;
+    }
+    button.primary { background: rgba(127,127,127,.14); }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    .msg { margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.35); }
+    .msg.ok { background: rgba(46, 204, 113, .15); }
+    .msg.no { background: rgba(231, 76, 60, .15); }
+    .explain { margin-top: 8px; opacity:.92; }
+    .hint { font-size: 13px; opacity: .8; margin-top: 10px; }
+    .footer { margin-top: 14px; display:flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; opacity:.9; }
+    .kbd { font-family: ui-monospace, monospace; border:1px solid rgba(127,127,127,.35); border-bottom-width: 2px; border-radius: 8px; padding: 2px 6px; }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>QCM — Boucles <code>for</code> / <code>while</code> (10 questions)</h1>
+  <p class="sub">Les questions sont présentées une par une. Tu ne peux passer à la suivante <strong>que si</strong> tu coches <strong>exactement</strong> toutes les bonnes réponses (et aucune mauvaise). Après validation, une explication apparaît, puis le bouton “Question suivante”.</p>
+
+  <div class="card" id="card">
+    <div class="topbar">
+      <div class="pill" id="progress">Question 1 / 10</div>
+      <div class="pill" id="score">Validées : 0 / 10</div>
+    </div>
+
+    <div id="qarea"></div>
+
+    <div class="actions">
+      <button class="primary" id="checkBtn">Valider</button>
+      <button id="nextBtn" disabled>Question suivante</button>
+      <button id="resetBtn">Recommencer</button>
+    </div>
+
+    <div id="message" class="msg" style="display:none;"></div>
+
+    <div class="footer">
+      <div class="hint">Astuce : coche/décoche puis clique <span class="kbd">Valider</span>.</div>
+      <div class="hint">Interdiction d’exécuter le code 😉</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Données du QCM ---
+  // correct: tableau des indices (0-based) des bonnes propositions.
+  const QUIZ = [
+    {
+      title: "QCM 1 — Faux compteur",
+      code:
+` s = 0
+for i in range(1, 10):
+    if i % 2 == 0:
+        continue
+    s += i
+print(s)`,
+      choices: [
+        "A. La valeur affichée est 25",
+        "B. La ligne `s += i` est exécutée 9 fois",
+        "C. La ligne `s += i` est exécutée 5 fois",
+        "D. Supprimer `continue` change le résultat"
+      ],
+      correct: [0, 2, 3],
+      explanation:
+        "On additionne seulement les impairs de 1 à 9 : 1+3+5+7+9 = 25. " +
+        "La ligne `s += i` s’exécute donc 5 fois (pour i = 1,3,5,7,9). " +
+        "Sans `continue`, on ajouterait aussi les pairs, donc le résultat changerait."
+    },
+    {
+      title: "QCM 2 — Boucle vide",
+      code:
+`for i in range(5):
+    pass
+print(i)`,
+      choices: [
+        "A. Le programme affiche 4",
+        "B. Le programme affiche 5",
+        "C. La variable `i` existe après la boucle",
+        "D. Le mot-clé `pass` est obligatoire ici"
+      ],
+      correct: [0, 2],
+      explanation:
+        "`range(5)` produit 0,1,2,3,4 : après la boucle, `i` vaut 4, donc on affiche 4. " +
+        "En Python, la variable de boucle reste définie après la boucle (dans le même scope). " +
+        "`pass` n’est pas obligatoire : le bloc pourrait contenir une autre instruction (ou tu pourrais écrire autre chose), mais `pass` sert juste de “placeholder”."
+    },
+    {
+      title: "QCM 3 — While exponentiel",
+      code:
+`i = 1
+s = 0
+while i < 100:
+    s += i
+    i *= 2
+print(s)`,
+      choices: [
+        "A. La boucle s’exécute 7 fois",
+        "B. La valeur finale de `i` est 128",
+        "C. La complexité est logarithmique",
+        "D. La somme vaut 127"
+      ],
+      correct: [0, 1, 2, 3],
+      explanation:
+        "Les valeurs de i : 1,2,4,8,16,32,64 (7 itérations), puis i devient 128 et la condition `i < 100` échoue. " +
+        "Somme : 1+2+4+8+16+32+64 = 127. " +
+        "Comme i double à chaque tour, le nombre d’itérations est en O(log 100), donc logarithmique."
+    },
+    {
+      title: "QCM 4 — Somme imbriquée",
+      code:
+` s = 0
+for i in range(1, 6):
+    for j in range(i):
+        s += j
+print(s)`,
+      choices: [
+        "A. Le programme calcule une somme double",
+        "B. La valeur affichée est 20",
+        "C. `s` vaut la somme des entiers de 1 à 5",
+        "D. Le résultat est quadratique en 5"
+      ],
+      correct: [0, 1, 3],
+      explanation:
+        "Pour chaque i, on ajoute 0+1+...+(i-1). Donc s = Σ_{i=1..5} Σ_{j=0..i-1} j (somme double). " +
+        "Calcul : (0) + (0+1) + (0+1+2) + (0+1+2+3) + (0+1+2+3+4) = 0+1+3+6+10 = 20. " +
+        "Ce type de somme croît comme i^2 (et ici comme 5^2) : comportement quadratique."
+    },
+    {
+      title: "QCM 5 — Break silencieux",
+      code:
+` s = 0
+for i in range(10):
+    if i == 5:
+        break
+    s += i
+print(s)`,
+      choices: [
+        "A. La valeur affichée est 10",
+        "B. La boucle s’exécute 10 fois",
+        "C. La boucle s’arrête à `i = 5`",
+        "D. Remplacer `break` par `continue` change le résultat"
+      ],
+      correct: [0, 2, 3],
+      explanation:
+        "On additionne i = 0,1,2,3,4 puis on s’arrête quand i==5 : somme = 0+1+2+3+4 = 10. " +
+        "La boucle ne va pas jusqu’à 9 : elle s’interrompt à i=5. " +
+        "Si on remplace `break` par `continue`, on saute seulement l’ajout pour i=5, mais on continue pour 6..9 : le résultat change."
+    },
+    {
+      title: "QCM 6 — `for … else`",
+      code:
+`for i in range(3):
+    if i == 4:
+        break
+else:
+    print("FIN")`,
+      choices: [
+        "A. Le mot FIN est affiché",
+        "B. Le `else` s’exécute car il n’y a pas de `break`",
+        "C. Le `else` dépend de la condition du `if`",
+        "D. Le `else` dépend uniquement du `for`"
+      ],
+      correct: [0, 1, 3],
+      explanation:
+        "Le `break` ne s’exécute jamais (i prend 0,1,2, donc i==4 est faux). " +
+        "En Python, le `else` d’un `for` s’exécute uniquement si la boucle se termine sans `break`. " +
+        "Ici, elle se termine naturellement : on affiche donc “FIN”."
+    },
+    {
+      title: "QCM 7 — Décrément dangereux",
+      code:
+`i = 10
+while i > 0:
+    print(i)
+    i -= i // 3`,
+      choices: [
+        "A. Le programme termine toujours",
+        "B. `i` décroît strictement",
+        "C. Le programme peut boucler infiniment",
+        "D. Le décrément dépend de la valeur courante de `i`"
+      ],
+      correct: [2, 3],
+      explanation:
+        "Le décrément est `i // 3`. Tant que i est 1 ou 2, `i // 3` vaut 0, donc i n’est plus décrémenté et la boucle devient infinie. " +
+        "Donc le programme peut ne jamais terminer. Le décrément dépend bien de la valeur courante de i."
+    },
+    {
+      title: "QCM 8 — Condition logique",
+      code:
+` s = 0
+for i in range(1, 20):
+    if i % 3 == 0 and i % 5 != 0:
+        s += i
+print(s)`,
+      choices: [
+        "A. Le programme additionne certains multiples de 3",
+        "B. Les multiples de 15 sont inclus",
+        "C. Les multiples de 3 non multiples de 5 sont inclus",
+        "D. La condition est équivalente à `i % 15 == 0`"
+      ],
+      correct: [0, 2],
+      explanation:
+        "La condition demande : multiple de 3 ET PAS multiple de 5. " +
+        "Donc on additionne précisément les multiples de 3 qui ne sont pas des multiples de 5. " +
+        "Les multiples de 15 (multiples de 3 et de 5) sont exclus."
+    },
+    {
+      title: "QCM 9 — Boucle déguisée",
+      code:
+` s = 0
+for i in range(1, 100):
+    s += (i % 2)
+print(s)`,
+      choices: [
+        "A. Le programme compte les nombres impairs",
+        "B. Le résultat vaut 50",
+        "C. La boucle est indispensable",
+        "D. La complexité est linéaire"
+      ],
+      correct: [0, 1, 3],
+      explanation:
+        "`i % 2` vaut 1 si i est impair, 0 si i est pair. Donc la somme compte le nombre d’impairs entre 1 et 99 inclus : il y en a 50. " +
+        "La boucle fait 99 itérations : complexité linéaire. Elle n’est pas “indispensable” (on peut compter autrement), donc C est faux."
+    },
+    {
+      title: "QCM 10 — Variable fantôme",
+      code:
+`x = 1
+for i in range(5):
+    x += i
+    i = 10
+print(x)`,
+      choices: [
+        "A. La valeur affichée est 11",
+        "B. La valeur affichée est 15",
+        "C. L’affectation `i = 10` modifie la boucle",
+        "D. La variable de boucle est réaffectée à chaque itération"
+      ],
+      correct: [0, 3],
+      explanation:
+        "La boucle `for i in range(5)` impose i = 0,1,2,3,4 à chaque tour, indépendamment d’une affectation interne. " +
+        "Donc x = 1 + (0+1+2+3+4) = 11. " +
+        "L’affectation `i = 10` n’influence pas la valeur de i au tour suivant : i est réaffectée par le `for`."
+    }
+  ];
+
+  // --- Logique UI ---
+  let idx = 0;
+  let validated = Array(QUIZ.length).fill(false);
+
+  const qarea = document.getElementById("qarea");
+  const progress = document.getElementById("progress");
+  const score = document.getElementById("score");
+  const msg = document.getElementById("message");
+  const checkBtn = document.getElementById("checkBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  function escHtml(s) {
+    return s.replace(/[&<>"']/g, ch => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[ch]));
+  }
+
+  function render() {
+    const q = QUIZ[idx];
+
+    progress.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+
+    msg.style.display = "none";
+    msg.className = "msg";
+    msg.textContent = "";
+
+    nextBtn.disabled = true;
+
+    const choicesHtml = q.choices.map((txt, i) => {
+      const id = `c_${idx}_${i}`;
+      return `
+        <label class="choice" for="${id}">
+          <input type="checkbox" id="${id}" data-choice="${i}" />
+          <div>${escHtml(txt).replace(/`([^`]+)`/g, "<code>$1</code>")}</div>
+        </label>
+      `;
+    }).join("");
+
+    qarea.innerHTML = `
+      <div class="qtitle"><strong>${escHtml(q.title)}</strong></div>
+      <div class="hint">Une ou plusieurs réponses possibles.</div>
+      <pre><code>${escHtml(q.code)}</code></pre>
+      <div class="choices">${choicesHtml}</div>
+    `;
+
+    // Si déjà validée, on verrouille (optionnel : ici on laisse rejouer, mais on pourrait verrouiller)
+    // On choisit : une fois validée, on laisse passer direct au bouton suivant si on revient (normalement on ne revient pas).
+  }
+
+  function getCheckedIndices() {
+    const inputs = qarea.querySelectorAll('input[type="checkbox"][data-choice]');
+    const checked = [];
+    inputs.forEach(inp => {
+      if (inp.checked) checked.push(Number(inp.dataset.choice));
+    });
+    checked.sort((a,b)=>a-b);
+    return checked;
+  }
+
+  function arraysEqual(a,b) {
+    if (a.length !== b.length) return false;
+    for (let i=0;i<a.length;i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+
+  function showMessage(ok, text, explanation = "") {
+    msg.style.display = "block";
+    msg.className = ok ? "msg ok" : "msg no";
+    msg.innerHTML = `<strong>${ok ? "✅ Correct" : "❌ Pas encore"}</strong><div class="explain">${escHtml(text)}</div>` +
+                    (explanation ? `<div class="explain" style="margin-top:8px;">${escHtml(explanation)}</div>` : "");
+  }
+
+  checkBtn.addEventListener("click", () => {
+    const q = QUIZ[idx];
+    const checked = getCheckedIndices();
+    const correct = [...q.correct].sort((a,b)=>a-b);
+
+    if (arraysEqual(checked, correct)) {
+      validated[idx] = true;
+      showMessage(true,
+        "Tu as coché exactement toutes les bonnes réponses (et aucune mauvaise).",
+        q.explanation
+      );
+      nextBtn.disabled = false;
+    } else {
+      // Feedback minimal mais utile : dire s'il y a trop/ pas assez / erreurs
+      const setChecked = new Set(checked);
+      const setCorrect = new Set(correct);
+      const wrongSelected = checked.filter(x => !setCorrect.has(x));
+      const missing = correct.filter(x => !setChecked.has(x));
+
+      let t = "La sélection n’est pas exactement la bonne.";
+      if (wrongSelected.length && missing.length) t += " Tu as coché au moins une mauvaise proposition et il en manque au moins une bonne.";
+      else if (wrongSelected.length) t += " Tu as coché au moins une proposition fausse.";
+      else if (missing.length) t += " Il manque au moins une proposition vraie.";
+      else t += " (Cas rare : ordre/lecture).";
+
+      showMessage(false, t);
+      nextBtn.disabled = true;
+    }
+
+    score.textContent = `Validées : ${validated.filter(Boolean).length} / ${QUIZ.length}`;
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (!validated[idx]) return; // sécurité
+    if (idx < QUIZ.length - 1) {
+      idx += 1;
+      render();
+    } else {
+      // Fin
+      const total = validated.filter(Boolean).length;
+      qarea.innerHTML = `
+        <div class="qtitle"><strong>Terminé 🎉</strong></div>
+        <p>Tu as validé <strong>${total} / ${QUIZ.length}</strong> questions.</p>
+        <p>Si tu veux, tu peux recommencer pour refaire l’entraînement.</p>
+      `;
+      progress.textContent = `Fin`;
+      msg.style.display = "none";
+      nextBtn.disabled = true;
+    }
+  });
+
+  resetBtn.addEventListener("click", () => {
+    idx = 0;
+    validated = Array(QUIZ.length).fill(false);
+    render();
+  });
+
+  // Init
+  render();
+</script>
+</body>
+</html>
