@@ -1,3 +1,5 @@
+console.log("QUIZ JS CHARGÉ");
+
 window.QUIZ = [
 
   {
@@ -200,4 +202,5 @@ print(x)`,
   }
 
 ];
+
 
