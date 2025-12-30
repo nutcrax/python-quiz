@@ -1,4 +1,4 @@
-const QUIZ = [
+window.QUIZ = [
 
   {
     title: "QCM 1 — Faux compteur",
@@ -200,3 +200,4 @@ print(x)`,
   }
 
 ];
+
