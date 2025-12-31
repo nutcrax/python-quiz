@@ -2,28 +2,48 @@
 <html lang="fr">
 
 <head>
-  <meta charset="utf-8">
-  <title>Quiz Python</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Python – Index</title>
 
   <style>
+    :root {
+      color-scheme: light dark;
+    }
+
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 32px;
+      margin: 0;
+      padding: 24px;
       line-height: 1.4;
     }
 
     h1 {
-      margin-bottom: 8px;
+      margin-top: 0;
+      font-size: 26px;
     }
 
-    .theme {
-      margin-top: 28px;
+    .intro {
+      opacity: .8;
+      margin-bottom: 24px;
     }
 
-    .theme h2 {
+    /* === GRILLE RESPONSIVE === */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid rgba(127, 127, 127, .35);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
       font-size: 20px;
-      margin-bottom: 8px;
     }
 
     ul {
@@ -38,56 +58,72 @@
 
     a {
       text-decoration: none;
-      color: #0066cc;
-      font-weight: 500;
+      color: inherit;
+      padding: 6px 10px;
+      border-radius: 10px;
+      display: inline-block;
+      border: 1px solid rgba(127, 127, 127, .25);
     }
 
     a:hover {
-      text-decoration: underline;
+      background: rgba(127, 127, 127, .12);
     }
 
-    .note {
-      opacity: 0.7;
-      font-size: 14px;
-      margin-top: 40px;
+    .footer {
+      margin-top: 32px;
+      font-size: 13px;
+      opacity: .7;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Quiz Python</h1>
-  <p>Sélectionne un quiz :</p>
+  <h1>📘 Quiz Python</h1>
+  <p class="intro">
+    Sélectionne un quiz.
+    Chaque quiz s’ouvre dans le moteur interactif.
+  </p>
 
-  <div class="theme">
-    <h2>🔁 Boucles</h2>
-    <ul>
-      <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-1.js">Boucles — Quiz 1</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-2.js">Boucles — Quiz 2</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-3.js">Boucles — Quiz 3</a></li>
-    </ul>
+  <div class="grid">
+
+    <!-- BOUCLES -->
+    <div class="card">
+      <h2>🔁 Boucles</h2>
+      <ul>
+        <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-1.js">Boucles – Quiz 1</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-2.js">Boucles – Quiz 2</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Boucles/q-boucles-3.js">Boucles – Quiz 3</a></li>
+      </ul>
+    </div>
+
+    <!-- DICTIONNAIRES -->
+    <div class="card">
+      <h2>📗 Dictionnaires</h2>
+      <ul>
+        <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-1.js">Dictionnaires – Quiz 1</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-2.js">Dictionnaires – Quiz 2</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-3.js">Dictionnaires – Quiz 3</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-4.js">Dictionnaires – Quiz 4</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-5.js">Dictionnaires – Quiz 5</a></li>
+      </ul>
+    </div>
+
+    <!-- LISTES -->
+    <div class="card">
+      <h2>📙 Listes</h2>
+      <ul>
+        <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-1.js">Listes – Quiz 1</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-2.js">Listes – Quiz 2</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-3.js">Listes – Quiz 3</a></li>
+        <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-modelisation-1.js">Listes – Modélisation</a></li>
+      </ul>
+    </div>
+
   </div>
 
-  <div class="theme">
-    <h2>📚 Listes</h2>
-    <ul>
-      <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-1.js">Listes — Quiz 1</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-2.js">Listes — Quiz 2</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-3.js">Listes — Quiz 3</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Listes/q-listes-modelisation-1.js">Listes — Modélisation 1</a></li>
-    </ul>
-  </div>
-
-  <div class="theme">
-    <h2>🗂️ Dictionnaires</h2>
-    <ul>
-      <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-1.js">Dictionnaires — Quiz 1</a></li>
-      <li><a href="engine.html?quiz=Quiz-JS/Dictionnaires/q-dictionnaires-2.js">Dictionnaires — Quiz 2</a></li>
-    </ul>
-  </div>
-
-  <p class="note">
-    Les quiz sont présentés un par un via le moteur interactif.
+  <p class="footer">
+    Index responsive – prêt à évoluer 🚀
   </p>
 
 </body>
